@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"sort"
+	"log"
+	"os"
 
 	"github.com/therealfakemoot/ed-geodesic"
 )
@@ -18,11 +18,13 @@ func main() {
 
 	flag.Parse()
 
-	systems := geodesic.Cube(system, radius)
-	sort.Slice(systems, func(i, j int) bool {
-		return systems[i].Distance < systems[j].Distance
-	})
-	fmt.Printf("found %d systems", len(systems))
-	fmt.Println(systems[0])
+	r, err := geodesic.NewReport(system, radius)
+	if err != nil {
+		log.Fatal("error generating report: %s", err)
+	}
+	err = r.Render(os.Stdout)
+	if err != nil {
+		log.Fatal("error rendering report: %s", err)
+	}
 
 }
